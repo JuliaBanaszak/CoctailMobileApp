@@ -13,12 +13,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.LocalConfiguration
 import kotlinx.coroutines.delay
 import com.example.cocktailmobileapp.ui.theme.CocktailMobileAppTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+//import androidx.compose.ui.graphics.Color
+
+
 
 
 class MainActivity : ComponentActivity() {
@@ -84,7 +87,6 @@ fun CocktailItem(cocktailName: String, onClick: () -> Unit) {
 
 @Composable
 fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
-    // Przykładowe dane dotyczące koktajli (składniki i sposób przygotowania)
     val cocktailDetails = mapOf(
         "Mojito" to CocktailDetails(
             ingredients = "Rum, mięta, cukier, limonka, woda gazowana",
@@ -111,26 +113,92 @@ fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Mod
     }
 
     Column(modifier = modifier.padding(16.dp)) {
-        // Tytuł koktajlu
-        Text(text = cocktailName, style = MaterialTheme.typography.headlineSmall)
-        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = cocktailName, style = MaterialTheme.typography.headlineSmall) //nazwa
+        Spacer(modifier = Modifier.height(20.dp))
 
-        // Składniki w osobnych liniach
+        //naglowek skladniki
         Text(
+            text = "Składniki:",
+            fontWeight = FontWeight.Bold, //pogrubienie naglowka
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = details.ingredients.replace(", ", "\n"),
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        //naglowek przygotowanie
+        Spacer(modifier = Modifier.height(16.dp)) //obnizenie troche w dol
+        Text(
+            text = "Przygotowanie:",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = details.preparation.split(". ").joinToString("\n") { "• $it" },
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        /*Text(
             text = "Składniki:\n${details.ingredients.replace(", ", "\n")}",
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Przygotowanie w osobnych liniach
         Text(
             text = "Przygotowanie:\n${details.preparation.replace(". ", ".\n")}",
             style = MaterialTheme.typography.bodyLarge
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))*/
 
-        // Minutnik
-        Text(text = "Czas: $timeLeft sek.")
+        //minutnik
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween // Rozsuwa elementy
+        ) {
+            // Tu reszta kodu...
+
+            Column {
+                Text(
+                    text = "Czas: $timeLeft sek.",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(onClick = { isRunning = true }
+                    ) { Text("Start") }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = { isRunning = false }) { Text("Pauza") }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = {
+                        timeLeft = inputTime.toIntOrNull() ?: 60
+                        isRunning = false
+                    }) {
+                        Text("Reset")
+                    }
+                }
+            }
+        }
+
+        /*Text(
+            text = "Czas: $timeLeft sek.",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )*/
+
+        /*Text(text = "Czas: $timeLeft sek.")
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Button(onClick = { isRunning = true }) {
                 Text("Start")
@@ -143,11 +211,12 @@ fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Mod
             Button(onClick = { timeLeft = inputTime.toIntOrNull() ?: 60; isRunning = false }) {
                 Text("Reset")
             }
-        }
+        }*/
 
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onBack) {
-            Text("Wróć")
+            Text("Wróć do menu")
+
         }
     }
 }
