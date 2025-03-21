@@ -203,15 +203,17 @@ fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Mod
     }
 
     val scrollState = rememberScrollState()
+    val scrollState1 = rememberScrollState()
 
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-
-        verticalArrangement = Arrangement.SpaceBetween //rozsuwa elementy, minutnik na dole ekranu
+            .padding(16.dp)
+            .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.SpaceBetween //rozsuwa elementy, minutnik na dole ekranu
     ) {
-        Column {
+        Column (modifier = modifier.fillMaxSize().verticalScroll(scrollState1)){
+
             //wyglad nazwy drinka w naglowku
             Text(
                 text = cocktailName,
