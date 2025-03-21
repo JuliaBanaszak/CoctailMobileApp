@@ -21,6 +21,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 //import androidx.compose.ui.graphics.Color
 
 
@@ -200,10 +202,13 @@ fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Mod
         }
     }
 
-    Column(
+    val scrollState = rememberScrollState()
+
+    Box(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
+
         verticalArrangement = Arrangement.SpaceBetween //rozsuwa elementy, minutnik na dole ekranu
     ) {
         Column {
