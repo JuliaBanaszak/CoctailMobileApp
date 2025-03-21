@@ -1,14 +1,12 @@
 package com.example.cocktailmobileapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,10 +21,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-//import androidx.compose.ui.graphics.Color
-
-
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.activity.compose.BackHandler
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,16 +62,18 @@ fun CocktailMenu(modifier: Modifier = Modifier) {
         "Daiquiri",
         "Margarita"
     )
-    //val sortedCocktails = cocktails.sorted()
 
     var selectedCocktail by remember { mutableStateOf<String?>(null) }
     val configuration = LocalConfiguration.current
     val isTablet = configuration.screenWidthDp >= 600
 
     if (isTablet) {
-        Log.d("CocktailMenu", "Tablet Mode - Rendering Cocktail List")
-        Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            LazyColumn(modifier = Modifier.weight(1f)) {  //manu zostaje po lewej
+        Row(modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)) {
+            LazyColumn(modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()) {
                 items(cocktails) { cocktail ->
                     CocktailItem(cocktailName = cocktail, onClick = { selectedCocktail = cocktail })
                 }
@@ -85,18 +84,19 @@ fun CocktailMenu(modifier: Modifier = Modifier) {
             }
         }
     } else {
-        if (selectedCocktail == null) {
-            LazyColumn(modifier = modifier) {
-                items(cocktails) { cocktail ->
-                    CocktailItem(cocktailName = cocktail, onClick = { selectedCocktail = cocktail })
+        Column(modifier = modifier.fillMaxSize()) {
+            if (selectedCocktail == null) {
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(cocktails) { cocktail ->
+                        CocktailItem(cocktailName = cocktail, onClick = { selectedCocktail = cocktail })
+                    }
                 }
+            } else {
+                CocktailDetailScreen(selectedCocktail!!, onBack = { selectedCocktail = null })
             }
-        } else {
-            CocktailDetailScreen(selectedCocktail!!, onBack = { selectedCocktail = null })
         }
     }
 }
-
 
 @Composable
 fun CocktailItem(cocktailName: String, onClick: () -> Unit) {
@@ -193,7 +193,6 @@ fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Mod
 
     var timeLeft by remember { mutableStateOf(60) }
     var isRunning by remember { mutableStateOf(false) }
-    var inputTime by remember { mutableStateOf("60") }
 
     LaunchedEffect(isRunning) {
         while (isRunning && timeLeft > 0) {
@@ -203,105 +202,132 @@ fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Mod
     }
 
     val scrollState = rememberScrollState()
-    val scrollState1 = rememberScrollState()
 
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(16.dp)
             .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.SpaceBetween //rozsuwa elementy, minutnik na dole ekranu
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column (modifier = modifier.fillMaxSize().verticalScroll(scrollState1)){
-
-            //wyglad nazwy drinka w naglowku
-            Text(
-                text = cocktailName,
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                text = "Składniki:",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Spacer(modifier = Modifier.height(11.dp))
-            Text(
-                text = details.ingredients.replace(", ", "\n"),
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                text = "Przygotowanie:",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Spacer(modifier = Modifier.height(11.dp))
-            Column {
-                details.preparation.split("\\d+\\. ".toRegex()) // Podział na podstawie wzorca "1. ", "2. ", itd.
-                    .filter { it.isNotBlank() } // Usuwa puste elementy
-                    .forEachIndexed { index, step ->
-                        Text(
-                            text = "${index + 1}. $step",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Button(onClick = onBack) {
+                Text("Wróć")
             }
-
         }
 
-        //minutnik na dole ekranu
-        Column {
-            Text(
-                text = "Czas: $timeLeft sek.",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = cocktailName,
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Składniki: ",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Spacer(modifier = Modifier.height(11.dp))
+        Text(
+            text = details.ingredients.replace(", ", "\n"),
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Przygotowanie: ",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Spacer(modifier = Modifier.height(11.dp))
+        details.preparation.split("\\d+\\. ".toRegex()) // Podział na podstawie numerów kroków
+            .filter { it.isNotBlank() }
+            .forEachIndexed { index, step ->
+                Text(
+                    text = "${index + 1}. $step",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+        //miejsce minutnika
+        Spacer(modifier = Modifier.height(30.dp))
+
+        //minutnik
+        val minutesLeft = timeLeft / 60
+        val secondsLeft = timeLeft % 60
+
+        Text(
+            text = "%02d:%02d".format(minutesLeft, secondsLeft),
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //pola do wpisywania minut i sekund
+        var inputMinutes by remember { mutableStateOf(minutesLeft.toString()) }
+        var inputSeconds by remember { mutableStateOf(secondsLeft.toString()) }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            OutlinedTextField(
+                value = inputMinutes,
+                onValueChange = { value ->
+                    if (value.all { it.isDigit() }) {
+                        inputMinutes = value
+                        timeLeft = (inputMinutes.toIntOrNull() ?: 0) * 60 + (inputSeconds.toIntOrNull() ?: 0)
+                    }
+                },
+                label = { Text("Minuty") },
+                modifier = Modifier.width(100.dp)
             )
+            Spacer(modifier = Modifier.width(8.dp))
+            OutlinedTextField(
+                value = inputSeconds,
+                onValueChange = { value ->
+                    if (value.all { it.isDigit() }) {
+                        inputSeconds = value
+                        timeLeft = (inputMinutes.toIntOrNull() ?: 0) * 60 + (inputSeconds.toIntOrNull() ?: 0)
+                    }
+                },
+                label = { Text("Sekundy") },
+                modifier = Modifier.width(100.dp)
+            )
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-            //wysrodkowanie przyciskow do minutnika
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(onClick = { isRunning = true }) { Text("Start") }
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = { isRunning = false }) { Text("Pauza") }
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = {
-                    timeLeft = inputTime.toIntOrNull() ?: 60
-                    isRunning = false
-                }) {
-                    Text("Reset")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            //przycisk na dole po prawej
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Button(onClick = onBack) {
-                    Text("Wróć do menu")
-                }
-            }
+        //kontrolki minutnika
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(onClick = { isRunning = true }) { Text("Start") }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = { isRunning = false }) { Text("Pauza") }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = {
+                timeLeft = 60 //resetowanie czasu
+                inputMinutes = "1" //resetowanie minut
+                inputSeconds = "00" //resetowanie sekund
+            }) { Text("Reset") }
         }
     }
 }
 
-
-//model danych dla koktaili
 data class CocktailDetails(val ingredients: String, val preparation: String)
 
 @Preview(showBackground = true)
