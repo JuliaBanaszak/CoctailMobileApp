@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalConfiguration
 //import androidx.compose.ui.graphics.Color
 
 
@@ -63,17 +64,34 @@ fun CocktailMenu(modifier: Modifier = Modifier) {
     )
 
     var selectedCocktail by remember { mutableStateOf<String?>(null) }
+    val configuration = LocalConfiguration.current
+    val isTablet = configuration.screenWidthDp >= 600
 
-    if (selectedCocktail == null) {
-        LazyColumn(modifier = modifier) {
-            items(cocktails) { cocktail -> // <-- Tutaj mamy dostęp do 'cocktails'
-                CocktailItem(cocktailName = cocktail, onClick = { selectedCocktail = cocktail })
+    if (isTablet) {
+        Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            LazyColumn(modifier = Modifier.weight(1f)) {  //manu zostaje po lewej
+                items(cocktails) { cocktail ->
+                    CocktailItem(cocktailName = cocktail, onClick = { selectedCocktail = cocktail })
+                }
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            if (selectedCocktail != null) {
+                CocktailDetailScreen(selectedCocktail!!, onBack = { selectedCocktail = null }, modifier = Modifier.weight(2f))
             }
         }
     } else {
-        CocktailDetailScreen(selectedCocktail!!, onBack = { selectedCocktail = null })
+        if (selectedCocktail == null) {
+            LazyColumn(modifier = modifier) {
+                items(cocktails) { cocktail ->
+                    CocktailItem(cocktailName = cocktail, onClick = { selectedCocktail = cocktail })
+                }
+            }
+        } else {
+            CocktailDetailScreen(selectedCocktail!!, onBack = { selectedCocktail = null })
+        }
     }
 }
+
 
 @Composable
 fun CocktailItem(cocktailName: String, onClick: () -> Unit) {
