@@ -1,6 +1,7 @@
 package com.example.cocktailmobileapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -62,12 +63,14 @@ fun CocktailMenu(modifier: Modifier = Modifier) {
         "Daiquiri",
         "Margarita"
     )
+    //val sortedCocktails = cocktails.sorted()
 
     var selectedCocktail by remember { mutableStateOf<String?>(null) }
     val configuration = LocalConfiguration.current
     val isTablet = configuration.screenWidthDp >= 600
 
     if (isTablet) {
+        Log.d("CocktailMenu", "Tablet Mode - Rendering Cocktail List")
         Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             LazyColumn(modifier = Modifier.weight(1f)) {  //manu zostaje po lewej
                 items(cocktails) { cocktail ->
@@ -107,13 +110,81 @@ fun CocktailItem(cocktailName: String, onClick: () -> Unit) {
 fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
     val cocktailDetails = mapOf(
         "Mojito" to CocktailDetails(
-            ingredients = "Rum, mięta, cukier, limonka, woda gazowana",
+            ingredients = "rum, mięta, cukier, limonka, woda gazowana",
             preparation = "1. Zgnieść miętę w szklance. 2. Dodać cukier, rum i limonkę. 3. Wlać wodę gazowaną."
         ),
-        "Margarita" to CocktailDetails(
-            ingredients = "Tequila, likier pomarańczowy, sok z limonki",
-            preparation = "1. Wymieszać tequila, likier pomarańczowy i sok z limonki w shakerze. 2. Przelać do szklanki."
+        "Aperol Spritz" to CocktailDetails(
+            ingredients = "Aperol, prosecco, woda gazowana, pomarańcza, lód",
+            preparation = "1. Napełnić kieliszek lodem. 2. Wlać Aperol i prosecco. 3. Dodać wodę gazowaną i plasterek pomarańczy."
         ),
+        "Campari Orange" to CocktailDetails(
+            ingredients = "Campari, sok pomarańczowy, lód",
+            preparation = "1. Wypełnić szklankę lodem. 2. Wlać Campari i sok pomarańczowy. 3. Delikatnie wymieszać."
+        ),
+        "Martini" to CocktailDetails(
+            ingredients = "gin, wermut, oliwka",
+            preparation = "1. Wlać gin i wermut do szklanki z lodem. 2. Mieszać przez chwilę. 3. Przelać do kieliszka i dodać oliwkę."
+        ),
+        "Espresso Martini" to CocktailDetails(
+            ingredients = "wódka, likier kawowy, espresso, syrop cukrowy",
+            preparation = "1. Wstrząsnąć wszystkie składniki w shakerze z lodem. 2. Przelać do schłodzonego kieliszka. 3. Udekorować ziarnami kawy."
+        ),
+        "Jagerbomb" to CocktailDetails(
+            ingredients = "Jägermeister, napój energetyczny",
+            preparation = "1. Wlać napój energetyczny do szklanki. 2. Wrzucić kieliszek z Jägermeisterem do środka i wypić."
+        ),
+        "Malibu" to CocktailDetails(
+            ingredients = "Malibu, sok ananasowy, lód",
+            preparation = "1. Wypełnić szklankę lodem. 2. Wlać Malibu i sok ananasowy. 3. Delikatnie wymieszać."
+        ),
+        "Moscow Mule" to CocktailDetails(
+            ingredients = "wódka, piwo imbirowe, sok z limonki, lód",
+            preparation = "1. Wypełnić kubek lodem. 2. Wlać wódkę, piwo imbirowe i sok z limonki. 3. Delikatnie wymieszać."
+        ),
+        "Mimosa" to CocktailDetails(
+            ingredients = "szampan, sok pomarańczowy",
+            preparation = "1. Wlać sok pomarańczowy do kieliszka. 2. Delikatnie dolać szampana."
+        ),
+        "Sour Apple Vodka" to CocktailDetails(
+            ingredients = "wódka jabłkowa, likier kwaśne jabłko, sok jabłkowy, lód",
+            preparation = "1. Wstrząsnąć wszystkie składniki w shakerze z lodem. 2. Przelać do kieliszka."
+        ),
+        "Pina Colada" to CocktailDetails(
+            ingredients = "rum, mleczko kokosowe, sok ananasowy, lód",
+            preparation = "1. Wymieszać składniki w blenderze. 2. Przelać do szklanki. 3. Udekorować plasterkiem ananasa."
+        ),
+        "Old Fashioned" to CocktailDetails(
+            ingredients = "whiskey, cukier, angostura, woda, skórka pomarańczy",
+            preparation = "1. Rozpuścić cukier w wodzie z angosturą. 2. Dodać lód i whiskey. 3. Wymieszać i udekorować skórką pomarańczy."
+        ),
+        "Gin and Tonic" to CocktailDetails(
+            ingredients = "gin, tonik, limonka, lód",
+            preparation = "1. Wypełnić szklankę lodem. 2. Wlać gin i tonik. 3. Dodać plasterek limonki."
+        ),
+        "Sex on the Beach" to CocktailDetails(
+            ingredients = "wódka, likier brzoskwiniowy, sok pomarańczowy, sok żurawinowy, lód",
+            preparation = "1. Wypełnić szklankę lodem. 2. Wlać składniki i delikatnie wymieszać."
+        ),
+        "Cosmopolitan" to CocktailDetails(
+            ingredients = "wódka cytrynowa, likier pomarańczowy, sok żurawinowy, sok z limonki",
+            preparation = "1. Wstrząsnąć wszystkie składniki w shakerze z lodem. 2. Przelać do kieliszka."
+        ),
+        "Blue Kamikaze" to CocktailDetails(
+            ingredients = "wódka, likier blue curacao, sok z limonki",
+            preparation = "1. Wstrząsnąć składniki w shakerze. 2. Przelać do kieliszka."
+        ),
+        "Whiskey Sour" to CocktailDetails(
+            ingredients = "whiskey, sok z cytryny, syrop cukrowy, białko jajka",
+            preparation = "1. Wstrząsnąć wszystkie składniki w shakerze na sucho. 2. Dodać lód i ponownie wstrząsnąć. 3. Przelać do szklanki."
+        ),
+        "Daiquiri" to CocktailDetails(
+            ingredients = "rum, sok z limonki, syrop cukrowy",
+            preparation = "1. Wstrząsnąć składniki w shakerze z lodem. 2. Przelać do kieliszka."
+        ),
+        "Margarita" to CocktailDetails(
+            ingredients = "tequila, likier pomarańczowy, sok z limonki",
+            preparation = "1. Wymieszać tequilę, likier pomarańczowy i sok z limonki w shakerze. 2. Przelać do szklanki."
+        )
     )
 
     val details = cocktailDetails[cocktailName] ?: return
