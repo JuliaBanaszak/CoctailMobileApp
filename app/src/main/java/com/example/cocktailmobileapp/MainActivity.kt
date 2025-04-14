@@ -210,13 +210,21 @@ fun CocktailDetailScreen(cocktailName: String, onBack: () -> Unit, modifier: Mod
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+
+        @Composable
+        fun BackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+            IconButton(onClick = onClick, modifier = modifier) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
-            Button(onClick = onBack) {
-                Text("Wróć")
-            }
+            BackButton(onBack)
         }
 
         Spacer(modifier = Modifier.height(20.dp))
