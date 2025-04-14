@@ -24,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.activity.compose.BackHandler
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +63,19 @@ fun CocktailMenu(modifier: Modifier = Modifier) {
         "Whiskey Sour",
         "Daiquiri",
         "Margarita"
+    )
+
+    var isDarkMode by rememberSaveable { mutableStateOf(false) }
+
+    ThemeSwitch(
+        isChecked = isDarkMode,
+        onCheckedChange = { checked ->
+            isDarkMode = checked
+            AppCompatDelegate.setDefaultNightMode(
+                if (checked) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
+        }
     )
 
     var selectedCocktail by remember { mutableStateOf<String?>(null) }

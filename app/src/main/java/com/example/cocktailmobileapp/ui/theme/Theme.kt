@@ -10,6 +10,11 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import android.widget.Switch
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.appcompat.content.res.AppCompatResources
+import com.example.cocktailmobileapp.R
+
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -54,5 +59,29 @@ fun CocktailMobileAppTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
+    )
+}
+
+@Composable
+fun ThemeSwitch(
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    AndroidView(
+        factory = { context ->
+            Switch(context).apply {
+                //ustawienie customowych thumb (mode) i track
+                thumbDrawable = AppCompatResources.getDrawable(context, R.drawable.mode)
+                trackDrawable = AppCompatResources.getDrawable(context, R.drawable.track)
+
+                //obsługa kliknięcia
+                setOnCheckedChangeListener { _, checked ->
+                    onCheckedChange(checked)
+                }
+            }
+        },
+        update = { switch ->
+            switch.isChecked = isChecked
+        }
     )
 }
