@@ -24,22 +24,47 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.activity.compose.BackHandler
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.*
+import com.example.cocktailmobileapp.ui.ThemeViewModel
+import com.example.cocktailmobileapp.ui.theme.ThemeSwitch
 
 class MainActivity : ComponentActivity() {
+
+    private val themeViewModel: ThemeViewModel by viewModels()
+
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
-            CocktailMobileAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            val isDarkTheme by themeViewModel.isDarkThemeEnabled
+
+            CocktailMobileAppTheme(useDarkTheme = isDarkTheme) {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TopAppBar(
+                            title = { Text("Cocktail Recipes") },
+                            actions = {
+                                ThemeSwitch(
+                                    isChecked = isDarkTheme,
+                                    onCheckedChange = {
+                                        themeViewModel.toggleTheme()
+                                    }
+                                )
+                            }
+                        )
+                    }
+                ) { innerPadding ->
                     CocktailMenu(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun CocktailMenu(modifier: Modifier = Modifier) {
@@ -63,19 +88,6 @@ fun CocktailMenu(modifier: Modifier = Modifier) {
         "Whiskey Sour",
         "Daiquiri",
         "Margarita"
-    )
-
-    var isDarkMode by rememberSaveable { mutableStateOf(false) }
-
-    ThemeSwitch(
-        isChecked = isDarkMode,
-        onCheckedChange = { checked ->
-            isDarkMode = checked
-            AppCompatDelegate.setDefaultNightMode(
-                if (checked) AppCompatDelegate.MODE_NIGHT_YES
-                else AppCompatDelegate.MODE_NIGHT_NO
-            )
-        }
     )
 
     var selectedCocktail by remember { mutableStateOf<String?>(null) }

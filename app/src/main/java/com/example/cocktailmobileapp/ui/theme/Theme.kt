@@ -16,72 +16,34 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.example.cocktailmobileapp.R
 
 
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    background = DarkGrey,
+    surface = DarkGrey,
+    onBackground = WhiteRice,
+    onSurface = WhiteRice
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    background = WhiteRice,
+    surface = WhiteRice,
+    onBackground = Black,
+    onSurface = Black
 )
 
 @Composable
 fun CocktailMobileAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    val colors = if (!useDarkTheme) {
+        LightColorScheme
+    } else {
+        DarkColorScheme
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
+        colorScheme = colors,
         content = content
-    )
-}
-
-@Composable
-fun ThemeSwitch(
-    isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    AndroidView(
-        factory = { context ->
-            Switch(context).apply {
-                //ustawienie customowych thumb (mode) i track
-                thumbDrawable = AppCompatResources.getDrawable(context, R.drawable.mode)
-                trackDrawable = AppCompatResources.getDrawable(context, R.drawable.track)
-
-                //obsługa kliknięcia
-                setOnCheckedChangeListener { _, checked ->
-                    onCheckedChange(checked)
-                }
-            }
-        },
-        update = { switch ->
-            switch.isChecked = isChecked
-        }
     )
 }

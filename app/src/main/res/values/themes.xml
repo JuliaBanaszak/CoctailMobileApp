@@ -1,16 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="Theme.CocktailMobileApp" parent="android:Theme.Material.Light.NoActionBar">
-        <!-- Primary brand colors -->
-        <!--suppress AndroidDomInspection -->
         <item name="colorPrimary">@color/purple_2</item>
-        <!--suppress AndroidDomInspection -->
-        <item name="colorPrimaryVariant">@color/purple_2</item>
+        <item name="android:statusBarColor">@color/purple_2</item>
     </style>
 
-    <style name="ScreenBackground"><item name="android:background">@color/white_rice</item></style>
-    <style name="CardBackground"><item name="android:background">@color/white_rice</item></style>
-    <style name="TextColor"><item name="android:textColor">@color/black</item></style>
+    <style name="ScreenBackground">
+        <item name="android:background">@color/white_rice</item>
+    </style>
 
+    <style name="CardBackground">
+        <item name="android:background">@color/white_rice</item>
+    </style>
+
+    <style name="TextColor">
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>
